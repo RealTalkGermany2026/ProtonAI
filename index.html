@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proton AI: Intelligence as a Service</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#161a2b;--mu:#667;--ac:#5b3df5;--ac2:#14b8a6;--bd:#e3e6f0;--wa:#d97706;--bar:#e9e6ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1020;--card:#171a30;--tx:#eceefb;--mu:#98a0c4;--ac:#8b78ff;--ac2:#2dd4bf;--bd:#2a2e4d;--wa:#fbbf24;--bar:#2a2560;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1020;--card:#171a30;--tx:#eceefb;--mu:#98a0c4;--ac:#8b78ff;--ac2:#2dd4bf;--bd:#2a2e4d;--wa:#fbbf24;--bar:#2a2560;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:920px;margin:0 auto;padding:28px 18px 60px}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px}.logo b{color:var(--ac)}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.1;margin:22px 0 10px;letter-spacing:-1px}
+h1 span{background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mu);max-width:640px;margin:0 0 24px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:16px}
+#drop{border:2px dashed var(--bd);border-radius:14px;padding:34px 16px;text-align:center;cursor:pointer;color:var(--mu)}
+#drop.over,#drop:hover{border-color:var(--ac);color:var(--tx)}
+button,select{font:inherit;border-radius:9px;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;color:var(--mu);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.nm{font-weight:600}.dim{color:var(--mu);font-size:12px}
+.bar{height:8px;border-radius:4px;background:var(--bar);min-width:80px}.bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;border:1px solid var(--wa);color:var(--wa);margin:2px 4px 0 0;white-space:nowrap}
+.tag.g{border-color:var(--ac2);color:var(--ac2)}
+#adv{white-space:pre-wrap}.mu{color:var(--mu);font-size:13px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}nav .row{gap:6px}nav button{border:0;background:none;color:var(--mu)}nav button:hover{color:var(--tx)}
+.eye{display:inline-block;margin-top:34px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);border:1px solid var(--bd);border-radius:99px;padding:3px 12px}
+h2{font-size:clamp(22px,3.5vw,30px);letter-spacing:-.5px;margin:48px 0 6px}.lead{color:var(--mu);margin:0 0 18px;max-width:640px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.g3 .card{margin:0}.g3 h3{margin:6px 0 4px;font-size:17px}.g3 p{margin:0;color:var(--mu);font-size:14.5px}
+.ic{font-size:26px}.num{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:700}
+.pl{font-size:11px;border:1px solid var(--bd);border-radius:99px;padding:1px 8px;color:var(--mu);margin-left:6px;font-weight:500}
+#log{height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px}.b{max-width:86%;padding:10px 14px;border-radius:14px;white-space:pre-wrap;font-size:15px}.b.a{background:var(--bar);align-self:flex-start}.b.u{background:var(--ac);color:#fff;align-self:flex-end}
+#q{flex:1;min-width:180px;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.chips button{font-size:13px;border-radius:99px}
+details{border-bottom:1px solid var(--bd);padding:12px 0}summary{cursor:pointer;font-weight:600}details p{color:var(--mu);margin:8px 0 0}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--bd);color:var(--mu);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}.kpis .card{margin:0;padding:14px}.kpis b{font-size:22px;display:block}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-bottom:16px}.cg .card{margin:0}.cg h3{margin:0 0 10px;font-size:15px}.ch{position:relative;height:270px}
+</style></head><body><main>
+<nav><div class="logo">Proton<b>AI</b></div><div class="row"><button onclick="go('feat')">Features</button><button onclick="go('how')">How it works</button><button onclick="go('try')">Live demo</button><button onclick="go('chat')">Ask Proton</button><button onclick="go('faq')">FAQ</button></div></nav><span class="eye">Intelligence as a Service</span>
+<h1>Intelligence that <span>ranks</span>, not rambles.</h1>
+<p class="sub">Upload a sales or business report. Proton AI maps how your customers, products, regions and people connect, then ranks what matters by how much of the business depends on it and what drives your results.</p>
+<div class="row" style="margin-bottom:8px"><button class="p" onclick="go('try')">Try it on your data</button><button onclick="go('chat')">Chat with Proton</button></div>
+<h2 id="feat">Not another dashboard</h2><p class="lead">Dashboards sort by size. Proton AI measures dependence: which customers, products, regions and people the rest of your business actually leans on.</p>
+<div class="g3"><div class="card"><div class="ic">🕸️</div><h3>Importance ranking</h3><p>Your data becomes a network. Proton blends what your business depends on with what drives your results into one clear score per item.</p></div><div class="card"><div class="ic">🔎</div><h3>Hidden drivers</h3><p>Finds small accounts and products that rank far higher by influence than by revenue, the ones a top-10 list misses.</p></div><div class="card"><div class="ic">⚠️</div><h3>Dependency radar</h3><p>Flags items leaning on a single partner and categories where one name carries too much of the total.</p></div><div class="card"><div class="ic">💬</div><h3>Ask Proton</h3><p>An AI analyst that explains the ranking in plain language and answers follow-up questions about your numbers.</p></div><div class="card"><div class="ic">🔒</div><h3>Your rows stay put</h3><p>The ranking runs in your browser. Only a short summary goes to the AI when you ask for advice.</p></div><div class="card"><div class="ic">🔌</div><h3>Connectors<span class="pl">Planned</span></h3><p>Live links to CRM, ERP, accounting and spreadsheets, with rankings that update as your business moves.</p></div></div>
+<h2 id="how">How it works</h2><p class="lead">From a raw report to a ranked, explained picture in three steps.</p>
+<div class="g3"><div class="card"><div class="num">1</div><h3>Upload a report</h3><p>Any sales, finance or operations table in CSV or Excel. Proton detects the categories and the measure.</p></div><div class="card"><div class="num">2</div><h3>Map the business</h3><p>Proton maps how your customers, products, regions and people connect to each other.</p></div><div class="card"><div class="num">3</div><h3>Rank and explain</h3><p>Proton scores every item. You get a ranked list, risk signals and a written briefing.</p></div></div>
+<h2>Built for</h2><div class="g3" style="margin-bottom:8px"><div class="card"><h3>Sales analytics</h3><p>Which accounts, reps and products really anchor revenue, and where one lost relationship would hurt most.</p></div><div class="card"><h3>Financial analytics</h3><p>Cost centers, vendors and revenue lines ranked by how much of the P&amp;L depends on them.</p></div><div class="card"><h3>Operations</h3><p>Sites, teams and processes ranked by how many outcomes pass through them, such as capacity across multiple locations.</p></div></div>
+<h2 id="try">Live demo: try it on your own data</h2><p class="lead">Upload a real report and see whether the ranking matches your instincts.</p>
+<div class="card"><div id="drop"><b>Drop a CSV or Excel file here</b><br>or click to choose (first sheet is used)</div>
+<input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" hidden>
+<div id="setup" hidden style="margin-top:14px"><div class="row"><span id="fname" class="mu"></span><label>Measure: <select id="val"></select></label><button class="p" id="go">Rank importance</button></div><p class="mu" id="detected"></p></div></div>
+<div id="out" hidden><div class="kpis" id="kpi"></div><div class="tabs" id="tabs"></div><div class="cg"><div class="card"><h3>Proton score: top items</h3><div class="ch"><canvas id="c1"></canvas></div></div><div class="card"><h3>Value vs. influence</h3><div class="ch"><canvas id="c2"></canvas></div><p class="mu">Items high on the vertical axis but low on the horizontal punch above their revenue.</p></div><div class="card"><h3>What moves the measure</h3><div class="ch"><canvas id="c3"></canvas></div><p class="mu">Estimated effect on your measure versus a typical item.</p></div><div class="card" id="c4w"><h3>Trend by month</h3><div class="ch"><canvas id="c4"></canvas></div><p class="mu" id="c4m" hidden>Add a date column to your file to see trends.</p></div></div>
+<div class="card"><div class="scroll"><table><thead><tr><th>#</th><th>Item</th><th>Proton score</th><th>Dependence</th><th>Impact</th><th>Value</th><th>Share</th><th>Signals</th></tr></thead><tbody id="tb"></tbody></table></div>
+<p class="mu">Dependence shows how much of your data leans on the item (1.0× is average). Impact is the estimated change in your measure linked to the item. Proton score blends both (0–100). Share is within the item’s own category.</p></div>
+<div class="card"><div class="row"><button class="p" id="ai">Explain &amp; advise with Proton AI</button><span class="mu">Sends only the ranking summary, not your raw rows.</span></div><div id="adv" style="margin-top:12px"></div></div>
+</div>
+<h2 id="chat">Ask Proton</h2><p class="lead">Ask what Proton AI does, or, after you run the demo above, ask about your own ranking.</p>
+<div class="card"><div id="log"><div class="b a">Hi, I’m Proton’s assistant. Ask me how the ranking works, what data to upload, or, once you’ve run the demo, why something ranks where it does.</div></div>
+<div class="chips"><button onclick="send(this.textContent)">How is this different from a dashboard?</button><button onclick="send(this.textContent)">What is a hidden driver?</button><button onclick="send(this.textContent)">What should I do first with my results?</button></div>
+<div class="row"><input id="q" placeholder="Ask a question…" onkeydown="if(event.key=='Enter')send($('#q').value)"><button class="p" onclick="send($('#q').value)">Send</button></div></div>
+<h2 id="faq">FAQ</h2>
+<details><summary>How does Proton AI help my business?</summary><p>It shows which customers, products, regions and people your results depend on most, so you can protect the right accounts, back under-rated growth drivers and spot concentration risk before it turns into a loss.</p></details>
+<details><summary>How is this different from a normal dashboard?</summary><p>Dashboards sort by size. Proton looks at how things connect and influence your results, so it can surface small items that matter more than their revenue suggests.</p></details>
+<details><summary>How does AI make the answers better?</summary><p>The AI turns scores into a plain-language briefing built on your own names and numbers, answers follow-up questions, and says so when the data is too thin to support a claim, instead of giving generic advice.</p></details>
+<details><summary>Who is Proton AI for?</summary><p>Sales leaders, finance and operations teams, and founders who want clear priorities from the reports they already have, without needing a data team.</p></details>
+<details><summary>What data works best?</summary><p>Transaction-level tables with at least two category columns (customer, product, region, rep) and a numeric measure. Aggregated summaries give weaker rankings.</p></details>
+<details><summary>Is my data sent anywhere?</summary><p>Parsing and ranking happen in your browser. When you ask for advice or chat, a compact summary of the top-ranked items is sent to the AI, not your raw rows.</p></details>
+<details><summary>Can I trust the recommendations?</summary><p>Every ranking shows the numbers behind it, and Proton flags weak signals when data is thin. Treat results as decision support and check them against what you know about your business.</p></details>
+<footer>© Proton AI. Intelligence as a Service. Prototype.</footer>
+<script>
+const $=s=>document.querySelector(s);const go=id=>document.getElementById(id).scrollIntoView({behavior:'smooth'});let table=[],cols=[],res=null,tab=-1,fname='';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function parseCSV(t){const d=[';','\t',','].map(c=>[c,t.split(/\r?\n/)[0].split(c).length]).sort((a,b)=>b[1]-a[1])[0][0],o=[];let r=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}else if(c=='"')q=true;else if(c==d){r.push(f);f=''}else if(c=='\n'){r.push(f.replace(/\r$/,''));o.push(r);r=[];f=''}else f+=c}if(f||r.length){r.push(f);o.push(r)}return o.filter(r=>r.some(x=>String(x).trim()))}
+function num(s){if(typeof s=='number')return s;s=String(s).replace(/[^\d.,\-]/g,'');if(!/\d/.test(s))return NaN;const lc=s.lastIndexOf(','),ld=s.lastIndexOf('.');if(lc>ld)s=(ld>=0||/,\d{1,2}$/.test(s))?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');else s=s.replace(/,/g,'');return parseFloat(s)}
+function load(t,name){table=t;fname=name;const h=t[0].map((x,i)=>String(x||'Column '+(i+1)).trim()),d=t.slice(1);
+cols=h.map((n,i)=>{const v=d.map(r=>r[i]).filter(x=>x!==undefined&&x!==null&&String(x).trim()!==''),u=new Set(v.map(x=>String(x).trim())),nn=v.filter(x=>!isNaN(num(x))).length,dt=v.filter(x=>/^\d{1,4}[-\/.]\d{1,2}[-\/.]\d{1,4}/.test(String(x).trim())).length;
+let ty='skip';if(v.length){if(dt/v.length>.7)ty='date';else if(nn/v.length>.9&&(u.size>20||/revenue|sales|amount|total|profit|value|umsatz|betrag/i.test(n)))ty='num';else if(nn/v.length<=.9&&u.size>=2&&u.size<=Math.max(30,v.length*.5)&&u.size<=400)ty='cat'}return{n,i,ty}});
+const nums=cols.filter(c=>c.ty=='num'),cats=cols.filter(c=>c.ty=='cat'),best=nums.find(c=>/revenue|sales|amount|total|profit|umsatz|betrag/i.test(c.n))||nums[0];
+$('#val').innerHTML=nums.map(c=>`<option value="${c.i}" ${c==best?'selected':''}>${esc(c.n)}</option>`).join('')+'<option value="-1">Row count</option>';
+$('#detected').textContent=`${d.length} rows. Categories found: ${cats.map(c=>c.n).join(', ')||'none'}.`+(cats.length<2?' Need at least two category columns (e.g. customer, product, region).':'');
+$('#fname').textContent=name;$('#setup').hidden=false;$('#go').disabled=cats.length<2;$('#out').hidden=true}
+function run(){const vi=+$('#val').value,data=table.slice(1),cats=cols.filter(c=>c.ty=='cat').map(c=>c.i),id=new Map(),N=[];
+const node=(ci,v)=>{const k=ci+'\u0001'+v;if(!id.has(k)){id.set(k,N.length);N.push({ci,name:v,val:0,adj:new Map(),w:0})}return id.get(k)};
+for(const r of data){const v=vi>=0?num(r[vi]):1;if(isNaN(v))continue;const w=Math.abs(v),ids=cats.filter(ci=>String(r[ci]??'').trim()).map(ci=>node(ci,String(r[ci]).trim()));
+ids.forEach(a=>N[a].val+=v);for(let x=0;x<ids.length;x++)for(let y=x+1;y<ids.length;y++){const a=ids[x],b=ids[y];N[a].adj.set(b,(N[a].adj.get(b)||0)+w);N[b].adj.set(a,(N[b].adj.get(a)||0)+w)}}
+N.forEach(n=>n.w=[...n.adj.values()].reduce((a,b)=>a+b,0));let pr=N.map(()=>1/N.length);
+for(let it=0;it<60;it++){const nx=N.map(()=>.15/N.length);N.forEach((n,i)=>{if(n.w)for(const[j,w]of n.adj)nx[j]+=.85*pr[i]*w/n.w});pr=nx}
+N.forEach((n,i)=>n.s=pr[i]*N.length);
+const dims=cats.map(ci=>{const L=N.filter(n=>n.ci==ci),tot=L.reduce((a,n)=>a+n.val,0)||1;const bv=[...L].sort((a,b)=>b.val-a.val),bs=[...L].sort((a,b)=>b.s-a.s);
+L.forEach(n=>{n.sh=n.val/tot;n.vr=bv.indexOf(n)+1;n.pr=bs.indexOf(n)+1;n.tags=[];const g={};for(const[j,w]of n.adj){const o=N[j];(g[o.ci]=g[o.ci]||{t:0,m:0,p:''}).t+=w;if(w>g[o.ci].m){g[o.ci].m=w;g[o.ci].p=o.name}}
+let dep=0,dp='';for(const k in g)if(g[k].m/g[k].t>dep){dep=g[k].m/g[k].t;dp=g[k].p}n.dep=dep;n.dp=dp;
+if(L.length>=6&&n.vr-n.pr>=3)n.tags.push(['Hidden driver: ranks #'+n.pr+' by importance, #'+n.vr+' by value',1]);
+if(L.length>=6&&n.pr-n.vr>=3)n.tags.push(['Overvalued vs. its network role',1]);
+if(dep>.6&&n.s>=1)n.tags.push(['Dependent on '+dp+' ('+Math.round(dep*100)+'%)',1]);
+if(n.sh>.3)n.tags.push(['Concentration: '+Math.round(n.sh*100)+'% of total',1])});
+return{ci,n:cols[ci].n,L:bs}});res={dims,vname:vi>=0?cols[vi].n:'Row count'};tab=-1;$('#out').hidden=false;$('#adv').textContent='';draw();$('#out').scrollIntoView({behavior:'smooth'})}
+function draw(){$('#tabs').innerHTML=[['All',-1],...res.dims.map((d,i)=>[d.n,i])].map(([n,i])=>`<button class="${i==tab?'on':''}" data-i="${i}">${esc(n)}</button>`).join('');
+let L=tab<0?res.dims.flatMap(d=>d.L.slice(0,5).map(n=>({...n,dn:d.n}))).sort((a,b)=>b.s-a.s):res.dims[tab].L.slice(0,15).map(n=>({...n,dn:res.dims[tab].n}));
+const mx=Math.max(...L.map(n=>n.s));const f=x=>x.toLocaleString(undefined,{maximumFractionDigits:0});
+$('#tb').innerHTML=L.map((n,i)=>`<tr><td>${i+1}</td><td><div class="nm">${esc(n.name)}</div><div class="dim">${esc(n.dn)}</div></td><td style="min-width:130px"><div class="bar"><i style="width:${n.s/mx*100}%"></i></div><span class="dim">${n.s.toFixed(2)}×</span></td><td>${f(n.val)}</td><td>${(n.sh*100).toFixed(1)}%</td><td>${n.tags.map(t=>`<span class="tag ${t[0].startsWith('Hidden')?'g':''}">${esc(t[0])}</span>`).join('')}</td></tr>`).join('');
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=+b.dataset.i;draw()})}
+async function file(f){if(!f)return;try{if(/\.xlsx?$/i.test(f.name)){const wb=XLSX.read(await f.arrayBuffer());load(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''}).filter(r=>r.some(x=>String(x).trim())),f.name)}else load(parseCSV(await f.text()),f.name)}catch(e){$('#detected').textContent='Could not read file: '+e.message;$('#setup').hidden=false}}
+$('#drop').onclick=()=>$('#file').click();$('#file').onchange=e=>file(e.target.files[0]);
+$('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};$('#drop').ondragleave=()=>$('#drop').classList.remove('over');$('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');file(e.dataTransfer.files[0])};
+$('#go').onclick=run;
+const hist=[],SYS='You are the assistant on the website of Proton AI, an early-stage “intelligence as a service” business analytics prototype. Its method is proprietary: never describe the underlying algorithms, models, statistics or math; if asked, say it is Proton’s proprietary scoring and focus on what results mean. It ranks customers, products, regions and reps so users see what the business depends on rather than generic advice. It flags hidden drivers (higher importance rank than value rank), single-partner dependencies and concentration. Be concise, plain text, no markdown. Never invent features, pricing, customers or integrations beyond this; connectors are only planned. If analysis data is provided, use it with specific names and numbers; if not, invite the user to run the demo.';
+function ctx(){return res?JSON.stringify(res.dims.map(d=>({category:d.n,measure:res.vname,top:d.L.slice(0,6).map(n=>({name:n.name,importance:+n.s.toFixed(2),value:Math.round(n.val),share:+(n.sh*100).toFixed(1),valueRank:n.vr,importanceRank:n.pr}))}))):'None yet: no file has been analysed.'}
+function bub(r,t){const d=document.createElement('div');d.className='b '+r;d.textContent=t;$('#log').appendChild(d);$('#log').scrollTop=1e9;return d}
+</script>
+<script>
+let CH={};const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function mkey(s){s=String(s).trim();let m=s.match(/^(\d{4})-(\d{1,2})/);if(m)return m[1]+'-'+m[2].padStart(2,'0');m=s.match(/^(\d{1,2})([.\/])(\d{1,2})\2(\d{4})/);if(m){const a=+m[1],b=+m[3];return m[4]+'-'+String(m[2]=='.'?b:(a>12?b:a)).padStart(2,'0')}return null}
+function solve(A,b){const n=b.length;for(let i=0;i<n;i++){let p=i;for(let r=i+1;r<n;r++)if(Math.abs(A[r][i])>Math.abs(A[p][i]))p=r;[A[i],A[p]]=[A[p],A[i]];[b[i],b[p]]=[b[p],b[i]];const d=A[i][i]||1e-9;for(let r=i+1;r<n;r++){const f=A[r][i]/d;if(f){for(let c=i;c<n;c++)A[r][c]-=f*A[i][c];b[r]-=f*b[i]}}}const x=Array(n).fill(0);for(let i=n-1;i>=0;i--){let s=b[i];for(let c=i+1;c<n;c++)s-=A[i][c]*x[c];x[i]=s/(A[i][i]||1e-9)}return x}
+function analyze2(){const vi=+$('#val').value,cats=cols.filter(c=>c.ty=='cat').map(c=>c.i),dc=cols.find(c=>c.ty=='date'),data=table.slice(1),map=new Map(),F=[];
+res.dims.forEach(d=>{[...d.L].sort((a,b)=>b.val-a.val).slice(0,25).forEach(n=>{n.fi=F.length;F.push(n)});d.L.forEach(n=>{map.set(d.ci+'\u0001'+n.name,n);n.b=0;n.t={}})});
+const p=F.length,A=Array.from({length:p+1},()=>Array(p+1).fill(0)),B=Array(p+1).fill(0),test=[],tot={};let k=0,sum=0,cnt=0;
+for(const r of data){const y=vi>=0?num(r[vi]):1;if(isNaN(y))continue;const act=[p],mo=dc?mkey(r[dc.i]):null;
+for(const ci of cats){const nm=String(r[ci]??'').trim();if(!nm)continue;const n=map.get(ci+'\u0001'+nm);if(!n)continue;if(n.fi!==undefined)act.push(n.fi);if(mo)n.t[mo]=(n.t[mo]||0)+y}
+sum+=y;cnt++;if(mo)tot[mo]=(tot[mo]||0)+y;if(k++%5==0){test.push([act,y]);continue}
+for(const i of act){B[i]+=y;for(const j of act)A[i][j]++}}
+for(let i=0;i<p;i++)A[i][i]+=2;A[p][p]+=1e-6;const w=solve(A,B);F.forEach((n,i)=>n.b=w[i]);
+let ym=0;test.forEach(t=>ym+=t[1]);ym/=test.length||1;let sr=0,st=0;test.forEach(([a,y])=>{let q=0;a.forEach(i=>q+=w[i]);sr+=(y-q)**2;st+=(y-ym)**2});
+const M=Object.keys(tot).sort();
+if(M.length>=6){const a=M.slice(-3),b=M.slice(-6,-3);res.dims.forEach(d=>d.L.forEach(n=>{const l=a.reduce((s,m)=>s+(n.t[m]||0),0),q=b.reduce((s,m)=>s+(n.t[m]||0),0);if(q>0&&n.sh>=.01){const c=(l-q)/q;if(c>.25)n.tags.push(['Rising +'+Math.round(c*100)+'% (last 3 months)',1]);else if(c<-.25)n.tags.push(['Falling '+Math.round(c*100)+'% (last 3 months)',1])}}))}
+res.dims.forEach(d=>{const ms=Math.max(...d.L.map(n=>n.s))||1,mb=Math.max(...d.L.map(n=>Math.abs(n.b)))||1;d.L.forEach(n=>n.sc=Math.round(50*n.s/ms+50*Math.abs(n.b)/mb));d.L.sort((a,b)=>b.sc-a.sc)});
+res.reg={r2:test.length>=10&&st>0?1-sr/st:null};res.M=M;res.tot=tot;res.total=sum;res.nrows=cnt;res.N=res.dims.reduce((s,d)=>s+d.L.length,0)}
+const run0=run;function run2(){run0();analyze2();draw()}$('#go').onclick=run2;
+function draw(){if(!res||!res.reg)return;const R=res.reg,f=x=>x.toLocaleString(undefined,{maximumFractionDigits:0}),sg=x=>(x>=0?'+':'−')+f(Math.abs(x));
+$('#tabs').innerHTML=[['All',-1],...res.dims.map((d,i)=>[d.n,i])].map(([n,i])=>`<button class="${i==tab?'on':''}" data-i="${i}">${esc(n)}</button>`).join('');
+const L=tab<0?res.dims.flatMap(d=>d.L.slice(0,5).map(n=>({...n,dn:d.n}))).sort((a,b)=>b.sc-a.sc):res.dims[tab].L.slice(0,15).map(n=>({...n,dn:res.dims[tab].n}));
+$('#kpi').innerHTML=[[f(res.total),'Total '+res.vname],[f(res.nrows),'Rows analysed'],[res.N,'Items ranked'],[R.r2==null?'Not enough data':R.r2>=.3?'Strong':R.r2>=.1?'Moderate':'Weak','Signal strength']].map(k=>`<div class="card"><b>${esc(k[0])}</b><span class="mu">${esc(k[1])}</span></div>`).join('');
+const mx=Math.max(...L.map(n=>n.sc))||1;
+$('#tb').innerHTML=L.map((n,i)=>`<tr><td>${i+1}</td><td><div class="nm">${esc(n.name)}</div><div class="dim">${esc(n.dn)}</div></td><td style="min-width:120px"><div class="bar"><i style="width:${n.sc/mx*100}%"></i></div><span class="dim">${n.sc}/100</span></td><td>${n.s.toFixed(2)}×</td><td>${n.fi!==undefined?sg(n.b):'–'}</td><td>${f(n.val)}</td><td>${(n.sh*100).toFixed(1)}%</td><td>${n.tags.map(t=>`<span class="tag ${/^(Hidden|Rising)/.test(t[0])?'g':''}">${esc(t[0])}</span>`).join('')}</td></tr>`).join('');
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=+b.dataset.i;draw()});
+Chart.defaults.color=css('--mu');Chart.defaults.borderColor=css('--bd');const ac=css('--ac'),a2=css('--ac2'),wa=css('--wa');
+const mk=(id,c)=>{CH[id]&&CH[id].destroy();CH[id]=new Chart($('#'+id),{...c,options:{responsive:true,maintainAspectRatio:false,...c.options}})};
+const T=L.slice(0,10);
+mk('c1',{type:'bar',data:{labels:T.map(n=>n.name),datasets:[{data:T.map(n=>n.sc),backgroundColor:ac}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
+mk('c2',{type:'scatter',data:{datasets:[{data:L.map(n=>({x:+(n.sh*100).toFixed(2),y:+n.s.toFixed(2),n:n.name})),backgroundColor:a2,pointRadius:6}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.n+': '+c.raw.x+'% of value, '+c.raw.y+'× influence'}}},scales:{x:{title:{display:true,text:'Share of value (%)'}},y:{title:{display:true,text:'Influence (×)'}}}}});
+const D=L.filter(n=>n.fi!==undefined&&n.b).sort((a,b)=>b.b-a.b),DD=[...D.slice(0,6),...D.slice(Math.max(6,D.length-6))];
+mk('c3',{type:'bar',data:{labels:DD.map(n=>n.name),datasets:[{data:DD.map(n=>Math.round(n.b)),backgroundColor:DD.map(n=>n.b>=0?a2:wa)}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
+const M=res.M;$('#c4w').querySelector('.ch').hidden=M.length<2;$('#c4m').hidden=M.length>=2;
+if(M.length>=2){const cl=[ac,a2,wa];mk('c4',{type:'line',data:{labels:M,datasets:[{label:'Total',data:M.map(m=>res.tot[m]||0),borderDash:[6,4],borderColor:css('--tx'),yAxisID:'y1',pointRadius:2},...L.slice(0,3).map((n,i)=>({label:n.name,data:M.map(m=>n.t[m]||0),borderColor:cl[i],backgroundColor:cl[i],pointRadius:2,tension:.25}))]},options:{scales:{y:{position:'left'},y1:{position:'right',grid:{drawOnChartArea:false}}}}})}}
+function ctx(){return res&&res.reg?JSON.stringify({measure:res.vname,signalStrength:res.reg.r2==null?null:+res.reg.r2.toFixed(2),dims:res.dims.map(d=>({category:d.n,top:d.L.slice(0,6).map(n=>({name:n.name,protonScore:n.sc,dependence:+n.s.toFixed(2),impact:n.fi!==undefined?Math.round(n.b):null,value:Math.round(n.val),share:+(n.sh*100).toFixed(1),signals:n.tags.map(t=>t[0])}))}))}):'None yet: no file has been analysed.'}
+async function askAI(msgs,cb){const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})});if(!r.ok)throw new Error('AI unavailable');const d=await r.json();cb(d.text);return d.text}
+async function send(q){q=String(q).trim();if(!q)return;$('#q').value='';bub('u',q);hist.push({role:'user',content:q});const el=bub('a','Thinking…');try{el.textContent=await askAI([{role:'user',content:SYS+'\n\nAnalysis data: '+ctx()},{role:'assistant',content:'Understood.'},...hist.slice(-9)],t=>{el.textContent=t});hist.push({role:'assistant',content:el.textContent})}catch(e){el.textContent='Sorry, Proton AI couldn’t answer just now.';hist.pop()}}
+$('#ai').onclick=async()=>{if(!res||!res.reg)return;const el=$('#adv');el.textContent='Analysing…';$('#ai').disabled=true;try{await askAI([{role:'user',content:'You are Proton AI, a sharp business analyst. Below is Proton scoring output for a company report (file: '+fname+'). Write plain text, no markdown: 1) what this reveals that a top-by-value list would miss, 2) the 3 biggest risks or opportunities citing names and numbers, including trends from the signals, 3) 3 concrete next actions. If the signal is weak or the data is thin, say so. Never describe how the scores are calculated. No generic advice.\n\n'+ctx()}],t=>{el.textContent=t})}catch(e){el.textContent='Proton AI could not answer right now.'}$('#ai').disabled=false};
+async function file(f){if(!f)return;try{if(/\.xlsx?$/i.test(f.name)){const wb=XLSX.read(await f.arrayBuffer(),{cellDates:true});load(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''}).filter(r=>r.some(x=>String(x).trim())).map(r=>r.map(x=>x instanceof Date?x.toISOString().slice(0,10):x)),f.name)}else load(parseCSV(await f.text()),f.name)}catch(e){$('#detected').textContent='Could not read file: '+e.message;$('#setup').hidden=false}}
+</script></main></body></html>
