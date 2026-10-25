@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: String(m.content).slice(0, 20000) }]
   }));
-  const model = process.env.GEMINI_MODEL || 'gemini-3-flash-preview';
+  const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
   try {
     const r = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
