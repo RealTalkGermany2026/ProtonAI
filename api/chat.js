@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
       .map(p => p.text || '').join('');
     if (!r.ok || !text) {
       console.error('Gemini error', r.status, JSON.stringify(data));
-      return res.status(502).json({ error: 'AI unavailable' });
+      return res.status(502).json({ error: 'AI unavailable', status: r.status, detail: data });
     }
     res.status(200).json({ text });
   } catch (e) {
