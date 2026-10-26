@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
   const models = [process.env.GEMINI_MODEL || 'gemini-3.8-flash'];
   if (process.env.GEMINI_FALLBACK_MODEL) models.push(process.env.GEMINI_FALLBACK_MODEL);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+  let busy = false;
 
   for (const model of models) {
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -30,12 +31,15 @@ module.exports = async (req, res) => {
           .map(p => p.text || '').join('');
         if (r.ok && text) return res.status(200).json({ text });
         console.error('Gemini error', model, r.status, JSON.stringify(data));
-        if (![429, 500, 503].includes(r.status)) break;
+        if ([429, 500, 503].includes(r.status)) busy = true;
+        else break;
       } catch (e) {
         console.error('Function error', model, e);
       }
       if (attempt < 2) await sleep(400 * (attempt + 1));
     }
   }
+  if (busy) return res.status(503).json({ error: 'busy' });
   return res.status(502).json({ error: 'AI unavailable' });
 };
+
