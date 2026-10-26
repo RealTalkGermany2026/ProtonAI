@@ -56,6 +56,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--bd);color:var
 <h2 id="try">Live demo: try it on your own data</h2><p class="lead">Upload a real report and see whether the ranking matches your instincts.</p>
 <div class="card"><div id="drop"><b>Drop a CSV or Excel file here</b><br>or click to choose (first sheet is used)</div>
 <input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" hidden>
+<div style="text-align:center;margin-top:14px"><button class="p" id="demo">Try with sample data</button> <span class="mu">Fictional restaurant group, 12 months of sales</span></div>
 <div id="setup" hidden style="margin-top:14px"><div class="row"><span id="fname" class="mu"></span><label>Measure: <select id="val"></select></label><button class="p" id="go">Rank importance</button></div><p class="mu" id="detected"></p></div></div>
 <div id="out" hidden><div class="kpis" id="kpi"></div><div class="tabs" id="tabs"></div><div class="cg"><div class="card"><h3>Proton score: top items</h3><div class="ch"><canvas id="c1"></canvas></div></div><div class="card"><h3>Value vs. influence</h3><div class="ch"><canvas id="c2"></canvas></div><p class="mu">Items high on the vertical axis but low on the horizontal punch above their revenue.</p></div><div class="card"><h3>What moves the measure</h3><div class="ch"><canvas id="c3"></canvas></div><p class="mu">Estimated effect on your measure versus a typical item.</p></div><div class="card" id="c4w"><h3>Trend by month</h3><div class="ch"><canvas id="c4"></canvas></div><p class="mu" id="c4m" hidden>Add a date column to your file to see trends.</p></div></div>
 <div class="card"><div class="scroll"><table><thead><tr><th>#</th><th>Item</th><th>Proton score</th><th>Dependence</th><th>Impact</th><th>Value</th><th>Share</th><th>Signals</th></tr></thead><tbody id="tb"></tbody></table></div>
@@ -154,4 +155,16 @@ async function askAI(msgs,cb){const r=await fetch('/api/chat',{method:'POST',hea
 async function send(q){q=String(q).trim();if(!q)return;$('#q').value='';bub('u',q);hist.push({role:'user',content:q});const el=bub('a','Thinking…');try{el.textContent=await askAI([{role:'user',content:SYS+'\n\nAnalysis data: '+ctx()},{role:'assistant',content:'Understood.'},...hist.slice(-9)],t=>{el.textContent=t});hist.push({role:'assistant',content:el.textContent})}catch(e){el.textContent='Sorry, Proton AI couldn’t answer just now.';hist.pop()}}
 $('#ai').onclick=async()=>{if(!res||!res.reg)return;const el=$('#adv');el.textContent='Analysing…';$('#ai').disabled=true;try{await askAI([{role:'user',content:'You are Proton AI, a sharp business analyst. Below is Proton scoring output for a company report (file: '+fname+'). Write plain text, no markdown: 1) what this reveals that a top-by-value list would miss, 2) the 3 biggest risks or opportunities citing names and numbers, including trends from the signals, 3) 3 concrete next actions. If the signal is weak or the data is thin, say so. Never describe how the scores are calculated. No generic advice.\n\n'+ctx()}],t=>{el.textContent=t})}catch(e){el.textContent='Proton AI could not answer right now.'}$('#ai').disabled=false};
 async function file(f){if(!f)return;try{if(/\.xlsx?$/i.test(f.name)){const wb=XLSX.read(await f.arrayBuffer(),{cellDates:true});load(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''}).filter(r=>r.some(x=>String(x).trim())).map(r=>r.map(x=>x instanceof Date?x.toISOString().slice(0,10):x)),f.name)}else load(parseCSV(await f.text()),f.name)}catch(e){$('#detected').textContent='Could not read file: '+e.message;$('#setup').hidden=false}}
-</script></main></body></html>
+</script><script>
+function sampleData(){let s=7;const R=()=>(s=(s*16807)%2147483647)/2147483647,pick=(a,w)=>{let t=w.reduce((x,y)=>x+y,0)*R(),i=0;while(i<a.length-1&&(t-=w[i])>0)i++;return a[i]};
+const P=[['Margherita Pizza',14,.18],['Pasta Carbonara',16,.14],['Caesar Salad',11,.12],['Chai Latte',5,.12],['Weekend Brunch Set',19,.08],['Tiramisu',8,.1],['Soup of the Day',7,.1],['Catering Platter',38,.03],['Craft Burger',15,.13]],
+LOC=['Harbor','Old Town','Airport','University'],MO=['2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10'],rows=[['Date','Location','Product','Channel','Customer Type','Revenue']];
+for(let i=0;i<1600;i++){const m=Math.floor(R()*12),loc=pick(LOC,[.35,.3,.2,.15]),
+pr=pick(P,P.map(x=>x[2]*(x[0]=='Chai Latte'?1-.06*m:x[0]=='Weekend Brunch Set'?1+.09*m:1))),p=pr[0];let ch,seg,q=1+Math.floor(R()*3);
+if(p=='Catering Platter'){ch='Corporate Catering';seg='Office';q=2+Math.floor(R()*5)}
+else{ch=loc=='Harbor'?pick(['Delivery App','Dine-in','Takeaway'],[.7,.2,.1]):pick(['Dine-in','Delivery App','Takeaway'],[.55,.2,.25]);seg=loc=='Airport'?pick(['Tourist','Walk-in','Office'],[.6,.3,.1]):pick(['Walk-in','Regular','Tourist','Office'],[.45,.3,.15,.1])}
+rows.push([MO[m]+'-'+String(1+Math.floor(R()*28)).padStart(2,'0'),loc,p,ch,seg,Math.round(pr[1]*q*(.9+R()*.2)*100)/100])}
+return rows}
+$('#demo').onclick=()=>{load(sampleData(),'sample-restaurant-sales.csv (fictional data)');run2()};
+</script>
+</main></body></html>
