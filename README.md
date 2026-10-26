@@ -1,6 +1,6 @@
 #ProtonAI
 
-**Live demo:** https://protonai.vercel.app
+**Live demo:** https://protonai-intelligence.vercel.app/
 
 Proton AI is a prototype business-analytics tool. You upload a sales or operations report (CSV or Excel), and it ranks which customers, products, regions and people your results depend on most. It also charts trends, flags risks such as heavy reliance on one partner, and writes a plain-language briefing with an AI model.
 
