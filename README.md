@@ -1,4 +1,4 @@
-# Proton AI
+#ProtonAI
 
 **Live demo:** https://protonai.vercel.app
 
@@ -92,4 +92,4 @@ api/chat.js     Serverless function that calls Gemini
 
 ## Author
 
-Built by Devaraj (Dave) Iyer. Background in Artificial Intelligence and business analysis, MBA. [Add your LinkedIn link here]
+Built by Devaraj (Dave) Iyer. Background in Artificial Intelligence and Business Analysis, MBA. 
